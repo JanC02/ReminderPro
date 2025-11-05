@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App name -->
+    <string name="app_name">ReminderPro</string>
+
+    <!-- Main screen -->
+    <string name="add_reminder">Dodaj przypomnienie</string>
+    <string name="no_reminders">Brak przypomnień</string>
+    <string name="add_first_reminder">Dotknij + aby dodać swoje pierwsze przypomnienie</string>
+    <string name="quick_select">Szybki wybór</string>
+
+    <!-- Reminder item -->
+    <string name="category_icon">Ikona kategorii</string>
+    <string name="delete">Usuń</string>
+    <string name="enabled">Włączone</string>
+    <string name="disabled">Wyłączone</string>
+
+    <!-- Add/Edit reminder dialog -->
+    <string name="add_reminder_title">Nowe przypomnienie</string>
+    <string name="edit_reminder_title">Edytuj przypomnienie</string>
+    <string name="reminder_title">Tytuł</string>
+    <string name="reminder_message">Treść przypomnienia</string>
+    <string name="interval_settings">Ustawienia interwału</string>
+    <string name="use_slider">Użyj suwaka:</string>
+    <string name="or_enter_manually">Lub wpisz ręcznie:</string>
+    <string name="interval_value">Wartość</string>
+    <string name="time_unit">Jednostka</string>
+    <string name="save">Zapisz</string>
+    <string name="cancel">Anuluj</string>
+
+    <!-- Time units -->
+    <string name="minutes">minuty</string>
+    <string name="hours">godziny</string>
+    <string name="days">dni</string>
+
+    <!-- Quick select -->
+    <string name="quick_select_title">Szybki wybór przypomnień</string>
+    <string name="quick_reminder_icon">Ikona szybkiego przypomnienia</string>
+
+    <!-- Quick reminder templates -->
+    <string name="quick_water_title">Pij wodę</string>
+    <string name="quick_water_message">Pamiętaj o regularnym nawadnianiu organizmu</string>
+
+    <string name="quick_stretch_title">Rozciąganie</string>
+    <string name="quick_stretch_message">Czas na krótki stretch!</string>
+
+    <string name="quick_screen_title">Przerwa od ekranu</string>
+    <string name="quick_screen_message">Odpocznij oczy, spójrz w dal</string>
+
+    <string name="quick_vitamins_title">Witaminy</string>
+    <string name="quick_vitamins_message">Czas na codzienną dawkę witamin</string>
+
+    <string name="quick_exercise_title">Ćwiczenia</string>
+    <string name="quick_exercise_message">Czas na aktywność fizyczną!</string>
+
+    <string name="quick_posture_title">Postawa</string>
+    <string name="quick_posture_message">Wyprostuj się i popraw postawę</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Przypomnienia</string>
+    <string name="notification_channel_description">Powiadomienia o przypomnieniach</string>
+    <string name="notification_title_default">Przypomnienie</string>
+
+    <!-- Permissions -->
+    <string name="permission_notification_title">Zezwól na powiadomienia</string>
+    <string name="permission_notification_message">Ta aplikacja potrzebuje dostępu do powiadomień aby wysyłać przypomnienia</string>
+    <string name="permission_alarm_title">Zezwól na dokładne alarmy</string>
+    <string name="permission_alarm_message">Aby przypomnienia działały precyzyjnie, potrzebujemy dostępu do dokładnych alarmów</string>
+    <string name="grant_permission">Zezwól</string>
+
+    <!-- Validation messages -->
+    <string name="error_empty_title">Tytuł nie może być pusty</string>
+    <string name="error_empty_message">Treść nie może być pusta</string>
+    <string name="error_invalid_interval">Nieprawidłowy interwał</string>
+    <string name="error_interval_too_small">Interwał musi być większy niż 0</string>
+
+    <!-- Actions -->
+    <string name="delete_confirmation">Czy na pewno chcesz usunąć to przypomnienie?</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <string name="reminder_added">Przypomnienie dodane</string>
+    <string name="reminder_deleted">Przypomnienie usunięte</string>
+    <string name="reminder_updated">Przypomnienie zaktualizowane</string>
+
+    <!-- Interval formats -->
+    <string name="interval_minutes">co %d min</string>
+    <string name="interval_hours">co %d godz.</string>
+    <string name="interval_days">co %d dni</string>
+    <string name="interval_mixed">co %1$dh %2$dmin</string>
+</resources>

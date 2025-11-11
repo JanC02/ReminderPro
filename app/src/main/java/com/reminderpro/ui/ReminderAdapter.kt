@@ -14,6 +14,7 @@ import com.reminderpro.databinding.ItemReminderBinding
  */
 class ReminderAdapter(
     private val onToggleEnabled: (Reminder, Boolean) -> Unit,
+    private val onEdit: (Reminder) -> Unit,
     private val onDelete: (Reminder) -> Unit
 ) : ListAdapter<Reminder, ReminderAdapter.ReminderViewHolder>(ReminderDiffCallback()) {
 
@@ -23,7 +24,7 @@ class ReminderAdapter(
             parent,
             false
         )
-        return ReminderViewHolder(binding, onToggleEnabled, onDelete)
+        return ReminderViewHolder(binding, onToggleEnabled, onEdit, onDelete)
     }
 
     override fun onBindViewHolder(holder: ReminderViewHolder, position: Int) {
@@ -36,6 +37,7 @@ class ReminderAdapter(
     class ReminderViewHolder(
         private val binding: ItemReminderBinding,
         private val onToggleEnabled: (Reminder, Boolean) -> Unit,
+        private val onEdit: (Reminder) -> Unit,
         private val onDelete: (Reminder) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -54,6 +56,11 @@ class ReminderAdapter(
                 switchEnabled.isChecked = reminder.isEnabled
                 switchEnabled.setOnCheckedChangeListener { _, isChecked ->
                     onToggleEnabled(reminder, isChecked)
+                }
+
+                // Przycisk edycji
+                buttonEdit.setOnClickListener {
+                    onEdit(reminder)
                 }
 
                 // Przycisk usuwania

@@ -3,7 +3,9 @@
     "allow": [
       "Bash(java:*)",
       "Bash(echo:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

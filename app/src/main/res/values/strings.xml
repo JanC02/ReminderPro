@@ -12,6 +12,7 @@
     <!-- Reminder item -->
     <string name="category_icon">Ikona kategorii</string>
     <string name="delete">Usuń</string>
+    <string name="edit">Edytuj</string>
     <string name="enabled">Włączone</string>
     <string name="disabled">Wyłączone</string>
 
@@ -26,6 +27,7 @@
     <string name="interval_value">Wartość</string>
     <string name="time_unit">Jednostka</string>
     <string name="save">Zapisz</string>
+    <string name="update">Zaktualizuj</string>
     <string name="cancel">Anuluj</string>
 
     <!-- Time units -->

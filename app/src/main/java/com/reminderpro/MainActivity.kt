@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.reminderpro.data.Reminder
 import com.reminderpro.databinding.ActivityMainBinding
 import com.reminderpro.ui.AddReminderDialog
+import com.reminderpro.ui.EditReminderDialog
 import com.reminderpro.ui.QuickSelectBottomSheet
 import com.reminderpro.ui.ReminderAdapter
 import com.reminderpro.viewmodel.ReminderViewModel
@@ -65,6 +66,9 @@ class MainActivity : AppCompatActivity() {
         adapter = ReminderAdapter(
             onToggleEnabled = { reminder, enabled ->
                 handleToggleReminder(reminder, enabled)
+            },
+            onEdit = { reminder ->
+                showEditReminderDialog(reminder)
             },
             onDelete = { reminder ->
                 showDeleteConfirmation(reminder)
@@ -156,6 +160,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
         dialog.show(supportFragmentManager, "AddReminderDialog")
+    }
+
+    /**
+     * Pokazuje dialog edycji przypomnienia.
+     */
+    private fun showEditReminderDialog(reminder: Reminder) {
+        val dialog = EditReminderDialog(reminder) { id, title, message, intervalMinutes, categoryIcon ->
+            val updatedReminder = reminder.copy(
+                title = title,
+                message = message,
+                intervalMinutes = intervalMinutes,
+                categoryIcon = categoryIcon
+            )
+
+            viewModel.updateReminder(updatedReminder) {
+                // Jeśli przypomnienie jest aktywne, reschedule z nowymi parametrami
+                if (updatedReminder.isEnabled) {
+                    scheduler.cancelReminder(id)
+                    scheduler.scheduleReminder(updatedReminder)
+                }
+
+                runOnUiThread {
+                    Snackbar.make(binding.root, getString(R.string.reminder_updated), Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
+        dialog.show(supportFragmentManager, "EditReminderDialog")
     }
 
     /**

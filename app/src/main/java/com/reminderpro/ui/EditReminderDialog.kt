@@ -162,17 +162,35 @@ class EditReminderDialog(
 
     /**
      * Aktualizuje ręczne pole na podstawie suwaka.
+     * Automatycznie przełącza jednostkę w zależności od wartości.
      */
     private fun updateManualInputFromSlider(minutes: Int) {
-        val unit = binding.autoCompleteUnit.text.toString()
-
-        val value = when (unit) {
-            getString(R.string.minutes) -> minutes
-            getString(R.string.hours) -> minutes / 60
-            getString(R.string.days) -> minutes / (60 * 24)
-            else -> minutes
+        // Automatycznie wybierz odpowiednią jednostkę
+        val (unit, value) = when {
+            minutes < 60 -> {
+                // Mniej niż godzina -> minuty
+                Pair(getString(R.string.minutes), minutes)
+            }
+            minutes >= 60 && minutes < 1440 && minutes % 60 == 0 -> {
+                // Pełne godziny
+                Pair(getString(R.string.hours), minutes / 60)
+            }
+            minutes >= 1440 && minutes % 1440 == 0 -> {
+                // Pełne dni
+                Pair(getString(R.string.days), minutes / 1440)
+            }
+            minutes >= 60 -> {
+                // Godziny z minutami lub inne przypadki >= 60 minut -> pokaż w godzinach
+                Pair(getString(R.string.hours), minutes / 60)
+            }
+            else -> {
+                // Domyślnie minuty
+                Pair(getString(R.string.minutes), minutes)
+            }
         }
 
+        // Ustaw jednostkę i wartość
+        binding.autoCompleteUnit.setText(unit, false)
         binding.editTextValue.setText(value.toString())
     }
 

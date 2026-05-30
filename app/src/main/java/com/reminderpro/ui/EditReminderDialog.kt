@@ -27,7 +27,7 @@ class EditReminderDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.Theme_ReminderPro)
+        setStyle(STYLE_NORMAL, R.style.Theme_ReminderPro_Dialog)
     }
 
     override fun onCreateView(

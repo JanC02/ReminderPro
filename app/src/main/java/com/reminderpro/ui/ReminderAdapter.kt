@@ -52,7 +52,10 @@ class ReminderAdapter(
                 // Interwał
                 chipInterval.text = reminder.getFormattedInterval()
 
-                // Przełącznik włącz/wyłącz
+                // Przełącznik włącz/wyłącz.
+                // Najpierw zdejmujemy stary listener (widok mógł być zrecyklowany),
+                // żeby ustawienie isChecked nie wywołało onToggleEnabled dla błędnego przypomnienia.
+                switchEnabled.setOnCheckedChangeListener(null)
                 switchEnabled.isChecked = reminder.isEnabled
                 switchEnabled.setOnCheckedChangeListener { _, isChecked ->
                     onToggleEnabled(reminder, isChecked)

@@ -44,4 +44,18 @@
     </style>
 
     <style name="Theme.ReminderPro" parent="Base.Theme.ReminderPro" />
+
+    <!--
+        Motyw dla dialogów (Add/Edit). Dziedziczy kolory z Theme.ReminderPro
+        (więc automatycznie wspiera tryb ciemny przez values-night), ale ustawia
+        windowIsFloating=true, dzięki czemu okno "pływa": owija zawartość, jest
+        wyśrodkowane z marginesami od krawędzi, a przyciski lądują pod treścią.
+    -->
+    <style name="Theme.ReminderPro.Dialog" parent="Theme.ReminderPro">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowMinWidthMajor">85%</item>
+    </style>
 </resources>

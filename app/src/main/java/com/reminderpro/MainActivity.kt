@@ -8,10 +8,15 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -53,10 +58,40 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[ReminderViewModel::class.java]
         scheduler = ReminderScheduler.getInstance(this)
 
+        setupWindowInsets()
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
         checkPermissions()
+    }
+
+    /**
+     * Obsługuje window insets (edge-to-edge wymuszone na Androidzie 15 / targetSdk 35).
+     * Dodaje padding paska statusu na górze oraz odsuwa dolne elementy (FAB, przycisk
+     * szybkiego wyboru, listę) ponad pasek nawigacji, żeby się pod niego nie chowały.
+     */
+    private fun setupWindowInsets() {
+        // Bazowe (XML-owe) odstępy, do których doliczamy insety systemowe.
+        val fabBaseMargin = (binding.fabAddReminder.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+        val quickSelectBaseMargin = (binding.buttonQuickSelect.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+        val listBasePaddingBottom = binding.recyclerViewReminders.paddingBottom
+        val appBarBasePaddingTop = binding.appBarLayout.paddingTop
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            binding.appBarLayout.updatePadding(top = appBarBasePaddingTop + bars.top)
+
+            binding.fabAddReminder.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = fabBaseMargin + bars.bottom
+            }
+            binding.buttonQuickSelect.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = quickSelectBaseMargin + bars.bottom
+            }
+            binding.recyclerViewReminders.updatePadding(bottom = listBasePaddingBottom + bars.bottom)
+
+            insets
+        }
     }
 
     /**

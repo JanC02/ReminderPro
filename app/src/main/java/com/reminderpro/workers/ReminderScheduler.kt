@@ -39,13 +39,32 @@ class ReminderScheduler(private val context: Context) {
 
         val triggerTime = System.currentTimeMillis() + reminder.getTimeUntilNextTrigger()
 
-        // Używamy dokładnych alarmów dla precyzyjnych przypomnień
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                triggerTime,
-                pendingIntent
-            )
+            // Dokładne alarmy tylko gdy mamy uprawnienie; inaczej fallback na niedokładny,
+            // który nie wymaga SCHEDULE_EXACT_ALARM i nigdy nie rzuca SecurityException.
+            // Dzięki temu łańcuch przypomnień nigdy nie ginie po cichu.
+            if (canScheduleExactAlarms()) {
+                try {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                } catch (e: SecurityException) {
+                    // Wyścig: uprawnienie cofnięte tuż po sprawdzeniu -> niedokładny alarm
+                    alarmManager.setAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                }
+            } else {
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTime,
+                    pendingIntent
+                )
+            }
         } else {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,

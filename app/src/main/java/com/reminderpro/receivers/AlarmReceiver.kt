@@ -33,19 +33,27 @@ class AlarmReceiver : BroadcastReceiver() {
         val notificationHelper = NotificationHelper(context)
         notificationHelper.showReminderNotification(reminderId, title, message)
 
+        // Utrzymuj proces żywy aż korutyna zaplanuje następny alarm.
+        // Bez tego system może zabić receiver przed re-schedulingiem i łańcuch przypomnień się rwie.
+        val pendingResult = goAsync()
+
         // Zaktualizuj timestamp w bazie i zaplanuj następne przypomnienie
         CoroutineScope(Dispatchers.IO).launch {
-            val database = ReminderDatabase.getDatabase(context)
-            val repository = ReminderRepository(database.reminderDao())
+            try {
+                val database = ReminderDatabase.getDatabase(context)
+                val repository = ReminderRepository(database.reminderDao())
 
-            // Aktualizuj lastTriggered
-            repository.updateLastTriggered(reminderId)
+                // Aktualizuj lastTriggered
+                repository.updateLastTriggered(reminderId)
 
-            // Pobierz przypomnienie i zaplanuj następne
-            val reminder = repository.getReminderById(reminderId)
-            if (reminder != null && reminder.isEnabled) {
-                val scheduler = ReminderScheduler.getInstance(context)
-                scheduler.scheduleReminder(reminder)
+                // Pobierz przypomnienie i zaplanuj następne
+                val reminder = repository.getReminderById(reminderId)
+                if (reminder != null && reminder.isEnabled) {
+                    val scheduler = ReminderScheduler.getInstance(context)
+                    scheduler.scheduleReminder(reminder)
+                }
+            } finally {
+                pendingResult.finish()
             }
         }
     }

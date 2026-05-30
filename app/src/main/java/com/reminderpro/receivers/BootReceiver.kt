@@ -19,14 +19,21 @@ class BootReceiver : BroadcastReceiver() {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED ||
             intent.action == "android.intent.action.QUICKBOOT_POWERON"
         ) {
+            // Utrzymuj proces żywy aż korutyna odtworzy wszystkie alarmy po restarcie.
+            val pendingResult = goAsync()
+
             // Reschedule wszystkich aktywnych przypomnień
             CoroutineScope(Dispatchers.IO).launch {
-                val database = ReminderDatabase.getDatabase(context)
-                val dao = database.reminderDao()
-                val activeReminders = dao.getActiveReminders()
+                try {
+                    val database = ReminderDatabase.getDatabase(context)
+                    val dao = database.reminderDao()
+                    val activeReminders = dao.getActiveReminders()
 
-                val scheduler = ReminderScheduler.getInstance(context)
-                scheduler.rescheduleAllReminders(activeReminders)
+                    val scheduler = ReminderScheduler.getInstance(context)
+                    scheduler.rescheduleAllReminders(activeReminders)
+                } finally {
+                    pendingResult.finish()
+                }
             }
         }
     }

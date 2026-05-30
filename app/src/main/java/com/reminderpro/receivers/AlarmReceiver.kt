@@ -3,6 +3,7 @@ package com.reminderpro.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.reminderpro.data.QuietHoursStore
 import com.reminderpro.data.ReminderDatabase
 import com.reminderpro.data.ReminderRepository
 import com.reminderpro.notifications.NotificationHelper
@@ -29,9 +30,16 @@ class AlarmReceiver : BroadcastReceiver() {
 
         if (reminderId == -1L) return
 
-        // Wyświetl powiadomienie
-        val notificationHelper = NotificationHelper(context)
-        notificationHelper.showReminderNotification(reminderId, title, message)
+        // Sieć bezpieczeństwa: ustawienia ciszy mogły się zmienić po zaplanowaniu alarmu.
+        // Jeśli odpalamy się wewnątrz okna ciszy, nie pokazujemy powiadomienia i nie
+        // aktualizujemy lastTriggered — przeplanowanie (poniżej) przesunie dostarczenie
+        // na koniec okna przez ReminderScheduler.adjustTriggerTime.
+        val inQuietHours = QuietHoursStore(context).get().isWithin(System.currentTimeMillis())
+
+        if (!inQuietHours) {
+            val notificationHelper = NotificationHelper(context)
+            notificationHelper.showReminderNotification(reminderId, title, message)
+        }
 
         // Utrzymuj proces żywy aż korutyna zaplanuje następny alarm.
         // Bez tego system może zabić receiver przed re-schedulingiem i łańcuch przypomnień się rwie.
@@ -43,8 +51,10 @@ class AlarmReceiver : BroadcastReceiver() {
                 val database = ReminderDatabase.getDatabase(context)
                 val repository = ReminderRepository(database.reminderDao())
 
-                // Aktualizuj lastTriggered
-                repository.updateLastTriggered(reminderId)
+                // Aktualizuj lastTriggered tylko jeśli faktycznie dostarczyliśmy powiadomienie
+                if (!inQuietHours) {
+                    repository.updateLastTriggered(reminderId)
+                }
 
                 // Pobierz przypomnienie i zaplanuj następne
                 val reminder = repository.getReminderById(reminderId)

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.work.*
+import com.reminderpro.data.QuietHoursStore
 import com.reminderpro.data.Reminder
 import com.reminderpro.receivers.AlarmReceiver
 import java.util.concurrent.TimeUnit
@@ -37,7 +38,10 @@ class ReminderScheduler(private val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val triggerTime = System.currentTimeMillis() + reminder.getTimeUntilNextTrigger()
+        // Wylicz czas wyzwolenia i przesuń go poza okno ciszy (jeśli aktywne).
+        // To centralny punkt — obejmuje dodawanie, edycję, quick select, restart i self-rescheduling.
+        val rawTriggerTime = System.currentTimeMillis() + reminder.getTimeUntilNextTrigger()
+        val triggerTime = QuietHoursStore(context).get().adjustTriggerTime(rawTriggerTime)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Dokładne alarmy tylko gdy mamy uprawnienie; inaczej fallback na niedokładny,

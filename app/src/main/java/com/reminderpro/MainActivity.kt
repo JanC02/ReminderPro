@@ -7,6 +7,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,6 +27,7 @@ import com.reminderpro.databinding.ActivityMainBinding
 import com.reminderpro.ui.AddReminderDialog
 import com.reminderpro.ui.EditReminderDialog
 import com.reminderpro.ui.QuickSelectBottomSheet
+import com.reminderpro.ui.QuietHoursDialog
 import com.reminderpro.ui.ReminderAdapter
 import com.reminderpro.viewmodel.ReminderViewModel
 import com.reminderpro.workers.ReminderScheduler
@@ -92,6 +95,33 @@ class MainActivity : AppCompatActivity() {
 
             insets
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_quiet_hours -> {
+                showQuietHoursDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    /**
+     * Pokazuje dialog ustawień godzin ciszy. Po zapisie przeplanowuje aktywne
+     * przypomnienia, aby uwzględniły nowe okno.
+     */
+    private fun showQuietHoursDialog() {
+        val dialog = QuietHoursDialog {
+            viewModel.rescheduleAll(scheduler)
+            Snackbar.make(binding.root, getString(R.string.quiet_hours_saved), Snackbar.LENGTH_SHORT).show()
+        }
+        dialog.show(supportFragmentManager, "QuietHoursDialog")
     }
 
     /**

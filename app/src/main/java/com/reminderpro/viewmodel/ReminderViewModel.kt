@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.reminderpro.data.Reminder
 import com.reminderpro.data.ReminderDatabase
 import com.reminderpro.data.ReminderRepository
+import com.reminderpro.workers.ReminderScheduler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -103,6 +105,17 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             val count = repository.getRemindersCount()
             onResult(count)
+        }
+    }
+
+    /**
+     * Przeplanowuje wszystkie aktywne przypomnienia.
+     * Używane po zmianie ustawień godzin ciszy, aby zakolejkowane alarmy
+     * respektowały nowe okno (ReminderScheduler.scheduleReminder uwzględnia ciszę).
+     */
+    fun rescheduleAll(scheduler: ReminderScheduler) {
+        viewModelScope.launch(Dispatchers.IO) {
+            scheduler.rescheduleAllReminders(repository.getActiveReminders())
         }
     }
 

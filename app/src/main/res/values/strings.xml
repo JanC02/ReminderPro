@@ -89,4 +89,15 @@
     <string name="interval_hours">co %d godz.</string>
     <string name="interval_days">co %d dni</string>
     <string name="interval_mixed">co %1$dh %2$dmin</string>
+
+    <!-- Quiet hours (godziny ciszy) -->
+    <string name="quiet_hours">Godziny ciszy</string>
+    <string name="quiet_hours_description">W tym przedziale przypomnienia nie są wysyłane. Pierwsze zaległe pojawi się po zakończeniu okna.</string>
+    <string name="quiet_hours_enable">Włącz godziny ciszy</string>
+    <string name="quiet_hours_start">Początek</string>
+    <string name="quiet_hours_end">Koniec</string>
+    <string name="quiet_hours_picker_start_title">Początek godzin ciszy</string>
+    <string name="quiet_hours_picker_end_title">Koniec godzin ciszy</string>
+    <string name="quiet_hours_saved">Godziny ciszy zapisane</string>
+    <string name="time_format">%1$02d:%2$02d</string>
 </resources>
